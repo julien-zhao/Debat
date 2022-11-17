@@ -9,6 +9,7 @@ public class Main {
 		
 		//Phase 1
 		/*
+		hello
 		//int choix = 0;
 		int nbArg = Utile.nbArg(sc);		
 		Utile.menu1(sc,nbArg, matrice);
