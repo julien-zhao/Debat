@@ -8,12 +8,12 @@ public class Main {
 		ListeAdjacence matrice = new ListeAdjacence();
 		
 		//Phase 1
-		/*
+		
 		//int choix = 0;
 		int nbArg = Utile.nbArg(sc);		
 		Utile.menu1(sc,nbArg, matrice);
 		
-		*/
+		//pc
 		//commentaire
 		/**
 		 * 
@@ -27,7 +27,7 @@ public class Main {
 		//Phase 2
 		
 		//Lire un fichier 
-		
+		/* 
 		try {
 			Utile.lireFichier("/Users/julien/Documents/L3/JavaA/Debat_ZHAO_YE/src/debat.txt",matrice);
 		}catch(FileNotFoundException f) {
@@ -39,7 +39,7 @@ public class Main {
 		
 		System.out.println(matrice);
 		
-		
+		*/
 		
 		
 		
