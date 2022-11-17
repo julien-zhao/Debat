@@ -1,127 +1,272 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
+
 public class Utile {
-	
-	public static int nbArg() {
-		System.out.println("Entrer le nombre d'argument n : ");
-		Scanner sc = new Scanner(System.in);
-		int nb = sc.nextInt();
+	static Scanner sc = new Scanner(System.in);
+
+	/**
+	 * méthode qui va lire un entier
+	 * @param sc
+	 * @param message
+	 * @return
+	 */
+	public static int lireEntier(Scanner sc, String message) {
+		boolean lecture = false;
+		int res =0;
+		
+		while(!lecture) {
+			try {
+				System.out.println(message);
+				res = sc.nextInt();
+				lecture = true;
+			}catch(InputMismatchException e) {
+				System.out.println("Il faut taper un nombre");
+				sc.nextLine();
+			}
+		}
+		return res;
+	}
+	/**
+	 * méthode qui va lire un string
+	 * @param sc
+	 * @param message
+	 * @return
+	 */
+	public static String lireString(Scanner sc, String message) {
+		boolean lecture = false;
+		String res =null;
+		
+		while(!lecture) {
+			try {
+				System.out.println(message);
+				res = sc.nextLine();
+				lecture = true;
+			}catch(InputMismatchException e) {
+				System.out.println("Il faut taper un string");
+				sc.nextLine();
+			}
+		}
+		return res;
+	}
+	/**
+	 * méthode qui demande à l'utilisateur le nombre d'argument
+	 * @return nb le nombre d'argument
+	 */
+	public static int nbArg(Scanner sc) {
+		int nb;
+		do {
+			
+			nb = lireEntier(sc,"Entrez le nombre d'argument n : ");
+
+		}while(nb <0);
+
 		return nb;
 	}
-	
-	
-	public static void menu1(int nbArg, ListeAdjacence maps) {
-		int choix;
-		
-		if(nbArg >0) {
-			do {
-	
-				System.out.println("1) ajouter une contradiction;");
-				System.out.println("2) fin. ");
-				Scanner scChoix = new Scanner(System.in);
-				choix = scChoix.nextInt();
-				
-				if(choix == 1) {
-					for(int i=0; i<nbArg; i++) {
-						System.out.println("A quel argument vous voulez ajouter une contradiction");
-						Scanner sc1 = new Scanner(System.in);
-						
-					
-						Noeud unArg = new Noeud(sc1.nextLine());
-						
-						if(maps.argument(unArg) ==false) {
-							System.out.println("Argument identique, veuillez ajouter un autre argument");
-							i--;
-						}
-						
-						
-					}
-					
-					//Toute clé dans une liste
-					ArrayList<Noeud> uneListe = new ArrayList<Noeud>();
-					
-					System.out.println(maps.affichage());
-					
-					for(Noeud unNoeud : maps.getMaps().keySet()) {
-						uneListe.add(unNoeud);
-						
-						//A : [B]
-					}
 
-					
-					for(int i =1; i<uneListe.size();i++) {
-						for(Noeud unNoeud : maps.getMaps().keySet()) {
-							maps.contradiction(unNoeud, uneListe.get(i));
-						}
-					}
-					
-					
-					/*
-					 * A, B, C
-					 * 
-					 * A : []
-					 * B : []
-					 * C : []
-					 * 
-					 * attendu : 
-					 * A : [B]
-					 * B : [C]
-					 * C : []
-					 * 
-					 * 
-					 */
+	public static void menu1(Scanner sc,int nbArg, ListeAdjacence maps) {
+		Scanner scString = new Scanner(System.in);
+		int choix = -1;
+		for(int i=1; i<=nbArg ;i++) {
+			Noeud unArg = new Noeud("A"+i);
+			maps.argument(unArg);
+		}
 
-					
-					//TODO
-				}
-			
-				if(choix !=1 && choix != 2) {
-					System.out.println("erreur de choix");
-					//Gestion d'erreur
-				}
+		do {
+			System.out.println("*******************Menu1*********************");
+			System.out.println("1) ajouter une contradiction;");
+			System.out.println("2) fin. ");
+			System.out.println("*********************************************\n");
+			choix = lireEntier(sc, "Votre choix ?");
+			if(choix ==1) {
+				String arg1 =null;
+				String arg2 =null;
+				do {
+					arg1 = lireString(scString,"A quel argument vous voulez ajouter une contradiction");
+				}while(!maps.stringCompareNoeud(arg1));
 				
-			
-			}while(choix == 1);
-			
-			if(choix ==2) {
-				menu2(maps);
+				do {
+					arg2 = lireString(scString, "Nom de l'argument contradictoire ");
+				}while(!maps.stringCompareNoeud(arg2));
+				
+				if(maps.stringCompareNoeud(arg1) && maps.stringCompareNoeud(arg2)) {
+					maps.contradiction(maps.stringToNoeud(arg1), maps.stringToNoeud(arg2));
+				}
+
 			}
+			if(choix != 1 && choix !=2){
+				System.out.println("Le choix est incorrect, veuillez taper 1 ou 2");
+			}
+		}while(choix != 2);
 		
+		System.out.println("Argument après les contradiction : \n" + maps.affichage());
+		
+		if(choix == 2) {
+			menu2(sc,maps);
 		}
-		
-		
+		scString.close();
 	}
-	
-	public static void menu2(ListeAdjacence maps) {
+
+	public static void menu2(Scanner sc, ListeAdjacence maps) {
 		int choix;
-		System.out.println("1) ajouter un argument;");
-		System.out.println("2) retirer;");
-		System.out.println("3) vérifier la solution;");
-		System.out.println("4) fin;");
-		
-		Scanner sc = new Scanner(System.in);
-		choix = sc.nextInt();
-		
-		switch(choix) {
+		String chaine;
+		Scanner scString = new Scanner(System.in);
+		do {
+			System.out.println("*******************Menu2*********************");
+			System.out.println("1) ajouter un argument;");
+			System.out.println("2) retirer un argument;");
+			System.out.println("3) vérifier la solution;");
+			System.out.println("4) fin;");
+			System.out.println("*********************************************");
+			
+			choix = lireEntier(sc,"Votre choix ? ");
+
+			switch (choix) {
 			case 1:
-				System.out.println("Le nom de l'argument : ");
-				Scanner sc1 = new Scanner(System.in);		
-				Noeud Arg1 = new Noeud(sc1.nextLine());
-				maps.argument(Arg1);
+				chaine = lireString(scString, "Le nom de l'argument");
+				maps.addSolution(chaine);
+				System.out.println("Solution actuel : " +maps.afficheSolutions());
+				break;
 			case 2:
-				System.out.println("Le nom de l'argument a retirer");
-				Scanner sc2 = new Scanner(System.in);
-				Noeud Arg2 = new Noeud(sc2.nextLine());
-				maps.getMaps().remove(Arg2);
+		
+				chaine = lireString(scString, "Le nom de l'argument a retirer");
+				Noeud Arg2 = new Noeud(chaine);	
+				if(maps.removeSolution(Arg2)) {
+					System.out.println("L'élément "+ Arg2.getNoeud() + " a été retiré.");
+					System.out.println("Solution actuel : " +maps.afficheSolutions());
+				}else {
+					System.out.println("L'élément "+Arg2.getNoeud() + " n'existe pas");
+					System.out.println("Solution actuel : " +maps.afficheSolutions());
+				}
+				break;
 			case 3:
-				//verifier la solution
+				if(maps.getSolutions().isEmpty()) {
+					System.out.println("Solution admissible : " + maps.afficheSolutions());
+					//System.out.println("Solution actuel : " +maps.afficheSolutions());
+					break;
+				}
+				if(maps.testSolution() ==false) {
+					System.out.println("Solution non admissible");
+					maps.verifSolution() ;
+					System.out.println("Solution actuel : " +maps.afficheSolutions());
+				}else {
+					maps.verifSolution();
+					System.out.println("Solution actuel : " +maps.afficheSolutions());
+				}
+				break;
 			case 4:
-				//affichage ensemble
-		
-		}
-		
+				if(maps.testSolution()== true) {
+					System.out.println("Solution admissible : "+ maps.afficheSolutions());
+				}else {
+					System.out.println("Solution non admissible : "+ maps.afficheSolutions());
+				}
+				break;
+			}
+			if(choix != 1 && choix !=2 && choix !=3 && choix !=4){
+				System.out.println("Le choix est incorrect, veuillez taper 1 ou 2 ou 3 ou 4");
+			}
+		} while (choix != 4);
+		scString.close();
+	}
+
+
+	
+	//Phase 2
+	public static void lireFichier(String chemin, ListeAdjacence maps) throws FileNotFoundException {
+		// Le fichier d'entrée
+		System.out.println("");
+		File file = new File(chemin);
+			
+		if (!file.exists()) {
+			throw new FileNotFoundException("Le fichier existe pas");
+		} else {
+
+			Scanner scanner = new Scanner(file);
+			// renvoie true s'il y a une autre ligne à lire
+			while (scanner.hasNext()) {
+				
+				String line = scanner.nextLine();
+			
+                if(line.startsWith("argument(")) {
+                	maps.scanArgument(line);
+                }else if(line.startsWith("contradiction(")){
+
+                	maps.scanContradiction(line);
+                }
+			}
+			scanner.close();
+		}	 
 	}
 	
+	
+	
+
+	public static void menu3(Scanner sc, ListeAdjacence maps) {
+		int choix;
+		do {
+			System.out.println("*******************Menu3*********************");
+			System.out.println("1) chercher une solution admissible;");
+			System.out.println("2) chercher une solution préférée;");
+			System.out.println("3) sauvegarder la solution;");
+			System.out.println("4) fin;");
+			System.out.println("*********************************************");
+			
+			choix = lireEntier(sc,"Votre choix ?");
+			switch (choix) {
+			case 1:
+				//admissible
+			case 2:
+				//préférée
+				break;
+			case 3:
+				//demander a l'utilisateur un chemin pour stcoker la soltion dans un ficheir
+				String chemin = lireString(sc,"Veuiller entrer le chemin pour sauvegarder la solution");
+				
+				break;
+			case 4:
+				// affichage ensemble
+				break;
+			}
+			
+			if(choix != 1 && choix !=2 && choix !=3 && choix !=4){
+				System.out.println("Le choix est incorrect, veuillez taper 1 ou 2 ou 3 ou 4");
+			}
+
+		} while (choix !=4 );
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

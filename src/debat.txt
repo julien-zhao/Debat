@@ -1,0 +1,7 @@
+argument(A).
+argument(B).
+argument(C).
+argument(D).
+contradiction(A,B).
+contradiction(B,C).
+contradiction(B,D).
