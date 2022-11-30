@@ -2,6 +2,13 @@ argument(A).
 argument(B).
 argument(C).
 argument(D).
+argument(E).
+argument(F).
 contradiction(A,B).
 contradiction(B,C).
-contradiction(B,D).
+contradiction(C,B).
+contradiction(C,D).
+contradiction(D,A).
+contradiction(D,E).
+contradiction(E,F).
+contradiction(F,D).

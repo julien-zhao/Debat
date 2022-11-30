@@ -83,18 +83,21 @@ public class Utile {
 			if(choix ==1) {
 				String arg1 =null;
 				String arg2 =null;
-				do {
-					arg1 = lireString(scString,"A quel argument vous voulez ajouter une contradiction");
-				}while(!maps.stringCompareNoeud(arg1));
-				
-				do {
-					arg2 = lireString(scString, "Nom de l'argument contradictoire ");
-				}while(!maps.stringCompareNoeud(arg2));
-				
+
+				arg1 = lireString(scString,"A quel argument vous voulez ajouter une contradiction");
+				arg2 = lireString(scString, "Nom de l'argument contradictoire ");
+				if(!maps.stringCompareNoeud(arg1) && !maps.stringCompareNoeud(arg2)) {
+					System.out.println(arg1 +" "+ arg2 + " n'existent pas" );
+				}else {
+					if(!maps.stringCompareNoeud(arg1)) {
+						System.out.println(arg1 + " n'existe pas" );
+					}else if(!maps.stringCompareNoeud(arg2)){
+						System.out.println(arg2 + " n'existe pas" );
+					}
+				}			
 				if(maps.stringCompareNoeud(arg1) && maps.stringCompareNoeud(arg2)) {
 					maps.contradiction(maps.stringToNoeud(arg1), maps.stringToNoeud(arg2));
 				}
-
 			}
 			if(choix != 1 && choix !=2){
 				System.out.println("Le choix est incorrect, veuillez taper 1 ou 2");
@@ -147,17 +150,17 @@ public class Utile {
 					//System.out.println("Solution actuel : " +maps.afficheSolutions());
 					break;
 				}
-				if(maps.testSolution() ==false) {
+				if(maps.testSolution2() ==false) {
 					System.out.println("Solution non admissible");
-					maps.verifSolution() ;
+					maps.verifSolution2() ;
 					System.out.println("Solution actuel : " +maps.afficheSolutions());
 				}else {
-					maps.verifSolution();
+					maps.verifSolution2();
 					System.out.println("Solution actuel : " +maps.afficheSolutions());
 				}
 				break;
 			case 4:
-				if(maps.testSolution()== true) {
+				if(maps.testSolution2()== true) {
 					System.out.println("Solution admissible : "+ maps.afficheSolutions());
 				}else {
 					System.out.println("Solution non admissible : "+ maps.afficheSolutions());
@@ -171,7 +174,7 @@ public class Utile {
 		scString.close();
 	}
 
-
+ 
 	
 	//Phase 2
 	public static void lireFichier(String chemin, ListeAdjacence maps) throws FileNotFoundException {
@@ -182,18 +185,21 @@ public class Utile {
 		if (!file.exists()) {
 			throw new FileNotFoundException("Le fichier existe pas");
 		} else {
-
 			Scanner scanner = new Scanner(file);
 			// renvoie true s'il y a une autre ligne à lire
 			while (scanner.hasNext()) {
 				
 				String line = scanner.nextLine();
 			
-                if(line.startsWith("argument(")) {
+                if(line.startsWith("argument(") && line.endsWith(").")) {
                 	maps.scanArgument(line);
-                }else if(line.startsWith("contradiction(")){
+                }else if(line.startsWith("contradiction(") && line.endsWith(").")){
 
                 	maps.scanContradiction(line);
+                }else {
+                	throw new FileNotFoundException("La ligne " + line+" est  mal formaté");
+                	//System.out.println("Mal formaté");
+                	//break;
                 }
 			}
 			scanner.close();
@@ -216,17 +222,22 @@ public class Utile {
 			choix = lireEntier(sc,"Votre choix ?");
 			switch (choix) {
 			case 1:
-				//admissible
+				maps.afficheListAdmissible();
+				break;
 			case 2:
-				//préférée
+				maps.afficheListPrefere();
 				break;
 			case 3:
-				//demander a l'utilisateur un chemin pour stcoker la soltion dans un ficheir
-				String chemin = lireString(sc,"Veuiller entrer le chemin pour sauvegarder la solution");
-				
+				if(maps.getListAdmissible().size() ==0 || maps.getListPrefere().size() == 0) {
+					//demander a l'utilisateur un chemin pour stcoker la soltion dans un ficheir
+					String chemin = lireString(sc,"Veuiller entrer le chemin pour sauvegarder la solution");
+				}else {
+					System.out.println("Veuillez choisir au moins une fois l'option 1 ou 2");
+				}
+
 				break;
 			case 4:
-				// affichage ensemble
+				System.out.println("Fin du programme");
 				break;
 			}
 			

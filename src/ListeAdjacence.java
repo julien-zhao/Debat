@@ -15,15 +15,23 @@ public class ListeAdjacence {
 	/**
 	 * un HashMap de integer et des solutions
 	 */
-	private LinkedHashMap<Integer, ArrayList<Noeud>> mapForPhase2;
 	
+	private ArrayList<Noeud> listAttack;
+	private ArrayList<Noeud> listSeFaireAttack;
+	
+	private ArrayList<ArrayList<String>> listAdmissible;
+	private ArrayList<ArrayList<String>> listPrefere;
+
 	/**
-	 * initialisation de maps, solutions et mapForPhase2 à vide
+	 * initialisation de maps, solutions
 	 */
 	public ListeAdjacence() {
-		maps = new LinkedHashMap<Noeud, Arc>();	
+		maps = new LinkedHashMap<Noeud, Arc>();
 		solutions = new ArrayList<Noeud>();
-		mapForPhase2 = new LinkedHashMap<Integer,ArrayList<Noeud>>();
+		listAttack = new ArrayList<Noeud>();
+		listSeFaireAttack = new ArrayList<Noeud>();
+		listAdmissible = new ArrayList<ArrayList<String>>();
+		listPrefere = new ArrayList<ArrayList<String>>();
 	}
 
 	/**
@@ -39,7 +47,7 @@ public class ListeAdjacence {
 				return true;
 			}
 		}
-		System.out.println("Nom incorrect : " + nom);
+		//System.out.println(nom + " n'existe pas");
 		return false;
 	}
 
@@ -76,7 +84,6 @@ public class ListeAdjacence {
 		if (identique) {
 			maps.put(noeud, new Arc());
 		}
-
 		return identique;
 	}
 
@@ -92,14 +99,11 @@ public class ListeAdjacence {
 
 		// si arg2 n'est pas déjà dans arg1 (redondance) et que arg1 et diffrent que
 		// arg2 (contradiction lui même)
-
-		
-		
 		if (!maps.get(arg1).getArc().contains(arg2) && (!arg1.equals(arg2))) {
 			maps.get(arg1).add(arg2);
 		}
 	}
- 
+
 	/**
 	 * méthode qui supprime un Noeud dans maps
 	 * 
@@ -204,43 +208,113 @@ public class ListeAdjacence {
 	public void verifSolution() {
 		int tmp = 0;
 		for (int i = 0; i < solutions.size(); i++) {
-			if (afficheInListContredit(solutions.get(i)))
-				tmp++;
+			if (afficheInListContredit(solutions.get(i)) && ((afficheInListContradiction(solutions.get(i)))))
+				tmp++; 
 		}
 		if (tmp == solutions.size()) {
 			System.out.println("Solution admissible : " + afficheSolutions());
 		}
 	}
 
+	public void verifSolution2() {
+		if(testSolution2()) {
+			System.out.println("Solution admissible : " + afficheSolutions());
+		}
+	}
 	/**
 	 * vérifie si tous les noeuds de solutions a au moins un argument contradictoire
 	 * de solutions ou non,
 	 * 
 	 * @return true s'il n'existe pas de contradiction.s entre les différents noeuds
-	 *         de solutions
+	 *         de solutions et il s'il n'existe pas un noeud qui lui contredit
 	 * @return false s'il existe au moins une contradiction entre les différents
 	 *         noeuds de solutions
 	 */
 	public boolean testSolution() {
 		int tmp = 0;
+		ArrayList<Noeud> tmp1 = null;
+		ArrayList<Noeud> tmp2 =null;
+		Noeud tmp3 = null;
+		ArrayList<Noeud> tmpList = new ArrayList<Noeud>();
+		//si la taille de la solution est 1, et qu'un arg lui contredit et lui il contredit personne, donc
+		//c'est pas une solution
+		if(solutions.size()==1) {
+			
+			Noeud tmpIn3 = solutions.get(0);
+			ArrayList<Noeud> tmpIn1 = getListContradiction(solutions.get(0));
+			ArrayList<Noeud> tmpIn2 = getListContredit(solutions.get(0));
+			if(tmpIn1.size()== 0 && tmpIn2.size() >0 ) {
+				tmp3 = tmpIn3;
+
+				tmp1 = tmpIn1;
+
+				tmp2 = tmpIn2;
+
+				tmpList.add(tmp3);
+				return false;
+			
+			}
+			
+		}
+
 		for (int i = 0; i < solutions.size(); i++) {
-			if (inListContredit(solutions.get(i))) {
+			if (!inListContredit(solutions.get(i)) && ((inListContradiction(solutions.get(i))))) {
 				tmp++;
 			}
 		}
 		if (tmp == solutions.size()) {
 			return true;
 		}
+		
+		
 		return false;
 
 	}
+	
+	public void remplieListAttackEtSeFaireAttack() {
+		for(int i=0; i< solutions.size();i++) {
+			ArrayList<Noeud> listContredit = getListContredit(solutions.get(i));
+			ArrayList<Noeud> listContradiction = getListContradiction(solutions.get(i));
+			
+			for(int j =0; j< listContradiction.size(); j++) {
+			
+				if(!listAttack.contains(listContradiction.get(j))) {
+					listAttack.add(listContradiction.get(j));
+				}
+			}
+			for(int j =0; j< listContredit.size(); j++) {
+				if(!listSeFaireAttack.contains(listContredit.get(j))) {
+					listSeFaireAttack.add(listContredit.get(j));
+				}
+			}
+		}
+	}
+	
+	public boolean testSolution2() {
+		if(solutions.size() ==0) {
+			return true;
+		}
+		remplieListAttackEtSeFaireAttack();
+		
+		for(int i =0; i< listAttack.size();i++) {
+			if(solutions.contains(listAttack.get(i))) {
+				return false;
+			}
+		}
 
+		if(listAttack.containsAll(listSeFaireAttack)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 
 	/**
 	 * vérifie si le noeud noeud existe comme clé dans maps
+	 * 
 	 * @param noeud
 	 * @return true ou false correspondant à l'appartenance du noeud noeud comme clé
-	 * dans maps
+	 *         dans maps
 	 */
 	public boolean inSolution(Noeud noeud) {
 		return maps.keySet().contains(noeud);
@@ -251,7 +325,7 @@ public class ListeAdjacence {
 	 * 
 	 * @return la liste list de tous les arguments qui viennent contredire noeud
 	 */
-	public ArrayList<Noeud> listContredit(Noeud noeud) {
+	public ArrayList<Noeud> getListContredit(Noeud noeud) {
 		ArrayList<Noeud> list = new ArrayList<>();
 		for (Noeud unNoeud : maps.keySet()) {
 			if (maps.get(unNoeud).getArc().contains(noeud)) {
@@ -259,6 +333,10 @@ public class ListeAdjacence {
 			}
 		}
 		return list;
+	}
+
+	public ArrayList<Noeud> getListContradiction(Noeud noeud) {
+		return maps.get(noeud).getArc();
 	}
 
 	/**
@@ -271,7 +349,7 @@ public class ListeAdjacence {
 		ArrayList<Noeud> list = new ArrayList<>();
 		boolean tmp = true;
 		for (Noeud unNoeud : solutions) {
-			list = listContredit(unNoeud);
+			list = getListContredit(unNoeud);
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i).equals(noeud)) {
 					System.out.println("L'argument " + noeud.getNoeud() + " contredit " + unNoeud.getNoeud());
@@ -280,6 +358,26 @@ public class ListeAdjacence {
 			}
 		}
 		return tmp;
+	}
+	//la raison pk non admissible
+	public boolean afficheInListContradiction(Noeud noeud) {
+		for (Noeud unNoeud : maps.keySet()) { // parcour tous les arguments du graphe
+			ArrayList<Noeud> listContradiction = getListContradiction(unNoeud);
+			// Un ensemble qui est égal a une contradiction d'un noeud n'est pas une
+			// solution
+			if (getSolutions().equals(listContradiction)) {
+				System.out.println("L'argument " + unNoeud.getNoeud() +" contredit " + afficheSolutions());
+				return false;
+			}
+
+			for (int j = 0; j < listContradiction.size();) {
+				if (listContradiction.get(j).equals(solutions.get(0)))
+					System.out.println("L'argument " + unNoeud.getNoeud() +" contredit " + solutions.get(0));
+					return false;
+			}
+
+		}
+		return true;
 	}
 
 	/**
@@ -291,25 +389,68 @@ public class ListeAdjacence {
 
 	public boolean inListContredit(Noeud noeud) {
 		ArrayList<Noeud> list = new ArrayList<>();
-		boolean tmp = true;
+
+		
 		for (Noeud unNoeud : solutions) {
-			list = listContredit(unNoeud);
+			list = getListContredit(unNoeud);
 			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).equals(noeud)) {
-					tmp = false;
+				if (list.get(i).equals(noeud) ) {
+					return true;
 				}
 			}
 		}
-		return tmp;
+		return false;
 	}
+	
+	
 
+	// verifier si le noeud à été contradit par un autre noeud dans le graphe
+	public boolean inListContradiction(Noeud noeud) {
+		
+		for (Noeud unNoeud : maps.keySet()) { // parcour tous les arguments du graphe
+			ArrayList<Noeud> listContradiction = getListContradiction(unNoeud);
+			// Un ensemble qui est égal a une contradiction d'un noeud n'est pas une
+			// solution
+	
+			//si a contradit b et b contradit a, alors a et b sont solution
+			for(int i =0; i< solutions.size();i++) {
+				if(doubleContradiction(solutions.get(i))) {
+					return true;
+				
+				}
+			}
+			//si la solution est egal a une contradiction d'un argument alors la solution est fausse
+			if (getSolutions().equals(listContradiction)) {
+				return false;
+			}
+
+		}
+		return true;
+	}
+	
+	//retourne vrai si le noeud contredit un arg et arg lui contredit aussi
+	public boolean doubleContradiction(Noeud noeud) {
+		ArrayList<Noeud> listContradiction= getListContradiction(noeud);
+		for(Noeud unNoeud : listContradiction) {
+			
+			ArrayList<Noeud> tmp = getListContradiction(unNoeud);
+			for(int i =0;i< tmp.size();i++) {
+				if(tmp.get(i).equals(noeud)) {
+					return true;
+				}	
+			}
+		}
+		return false;
+		
+	}
+	
 	/**
 	 * affiche l'ensemble des solutions solutions rentré par l'utilisateur
 	 */
 	public String afficheSolutions() {
 		StringBuilder sb = new StringBuilder("[");
 		int i = 0;
-		if(solutions.size() == 0) {
+		if (solutions.size() == 0) {
 			return "[]";
 		}
 		for (i = 0; i < solutions.size() - 1; i++) {
@@ -324,92 +465,188 @@ public class ListeAdjacence {
 	public ArrayList<Noeud> getSolutions() {
 		return solutions;
 	}
-	
-	
-	
-	
-	
-	//Phase 2: les methodes suivantes sont utilisés dans la phase 2
 
-	
-	//methode: recupere A et il fait map.argument(A)
-	
+	public void afficheSolution() {
+		for (int i = 0; i < solutions.size(); i++) {
+			System.out.println(solutions.get(i));
+		}
+	}
+
+	// Phase 2: les methodes suivantes sont utilisés dans la phase 2
+
+	// methode: recupere A et il fait map.argument(A)
+
 	/**
 	 * méthode qui prend une chaine et génère un graphe
+	 * 
 	 * @param chaine un argument en string
 	 */
+
 	public void scanArgument(String chaine) {
-		if(chaine.startsWith("argument(") ){
+
+		if (chaine.startsWith("argument(")) {
 			StringBuilder sb = new StringBuilder();
-			String [] tab = chaine.split("[\\(\\)]");
-			sb.append(tab[1]);	
+			String[] tab = chaine.split("[\\(\\)]");
+			sb.append(tab[1]);
 			argument(new Noeud(sb.toString()));
-		}else {
-			System.out.println("La chaine "+ chaine +" est mal formaté" );
-		}		
+		} 
 	}
-	
+
 	/**
-	 * méthode qui va séparé la chaine en trouvant 2 arguments qui sont séparés
-	 * par une virgule et crée la contradiction
+	 * méthode qui va séparé la chaine en trouvant 2 arguments qui sont séparés par
+	 * une virgule et crée la contradiction
 	 * 
 	 * @param chaine un string
 	 */
 	public void scanContradiction(String chaine) {
-		String [] tmp = chaine.split("[\\(\\)]");	 
-		String []tab = tmp[1].split(",");
+		String[] tmp = chaine.split("[\\(\\)]");
+		String[] tab = tmp[1].split(",");
 		contradiction(stringToNoeud(tab[0]), stringToNoeud(tab[1]));
 	}
-	
-	
-	static ArrayList<String> list = new ArrayList<String>();
 
-	
+	public int getSizeMatrice() {
+		return maps.size();
+	}
 
-	
-	
-	public ArrayList<Noeud> convertKeyToList() {
-		ArrayList<Noeud> list = new ArrayList<>();
-		for(Noeud unNoeud : maps.keySet()) {
-			list.add(unNoeud);
+	public String[] getAllArgument() {
+		String[] tab = new String[maps.keySet().size()];
+		int index = 0;
+		for (Noeud unNoeud : maps.keySet()) {
+			tab[index++] = unNoeud.getNoeud();
+		}
+		return tab;
+	}
+
+	public void BuildCombinationPossible(ArrayList<ArrayList<String>> map, ArrayList<String> sousMap,
+			String[] Input_Array, String[] tabVide, int debut, int fin, int indice, int tailleDeLaList) {
+
+		if (indice == tailleDeLaList) {
+			ArrayList<String> newMapVide = new ArrayList<>();
+			for (int x = 0; x < tailleDeLaList; x++) {
+				newMapVide.add(tabVide[x]);
+			}
+			sousMap = newMapVide;
+			map.add(sousMap);
+			return;
 		}
 
-		return list;
+		for (int y = debut; y <= fin && fin - y + 1 >= tailleDeLaList - indice; y++) {
+			tabVide[indice] = Input_Array[y];
+			BuildCombinationPossible(map, sousMap, Input_Array, tabVide, y + 1, fin, indice + 1, tailleDeLaList);
+		}
+	}
+
+	public void Print_Combination(ArrayList<ArrayList<String>> mapo, ArrayList<String> map, String[] Input_Array, int n,
+			int r) {
+		String[] Empty_Array = new String[r];
+		BuildCombinationPossible(mapo, map, Input_Array, Empty_Array, 0, n - 1, 0, r);
+	}
+
+	public ArrayList<ArrayList<String>> getAllCombinaison() {
+		String[] tab = getAllArgument();
+		ArrayList<ArrayList<String>> map = new ArrayList<ArrayList<String>>();
+		ArrayList<String> mapo = new ArrayList<String>();
+		// On ajoute la solution vide
+		mapo.add("");
+		map.add(mapo);
+		mapo.clear();
+
+		int n = tab.length;
+		for (int i = 1; i <= tab.length; i++) {
+			Print_Combination(map, mapo, tab, n, i);
+		}
+		return map;
+	}
+
+	
+	public void addSolutionAdmissible(String noeud) {
+		Noeud tmp = stringToNoeud(noeud);
+		solutions.add(tmp);
+
+	}
+
+	public void getAllAdmissible() {
+		ArrayList<ArrayList<String>> listAllCombinaison = getAllCombinaison();
+		for (int i = 0; i < listAllCombinaison.size(); i++) {
+			solutions.clear();
+			listAttack.clear();
+			listSeFaireAttack.clear();
+			for (int j = 0; j < listAllCombinaison.get(i).size(); j++) {
+				addSolutionAdmissible(listAllCombinaison.get(i).get(j));
+			}
+			if (testSolution2()) {
+				//System.out.println(listAllCombinaison.get(i));
+				listAdmissible.add(listAllCombinaison.get(i));			
+			}
+		}
+	}
+
+	public ArrayList<ArrayList<String>> getListAdmissible() {
+		return listAdmissible;
+	}
+	
+	private static int compteur =0;
+	public void afficheListAdmissible() {
+		getAllAdmissible();
+		String str;
+		if(listAdmissible.size() >0) {
+			if(compteur < listAdmissible.size()) {
+				str = String.join(",", listAdmissible.get(compteur++));
+				System.out.println(str);
+			}else {
+				compteur = 0;
+				str = String.join(",", listAdmissible.get(compteur++));
+				System.out.println(str);
+			}
+		}
+	}
+	
+	public boolean inclu(ArrayList<String> unAdmissible) {
+		for(int i =0; i< listAdmissible.size(); i++) {
+			if(listAdmissible.get(i).containsAll(unAdmissible) && listAdmissible.get(i) != unAdmissible) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
-	
-	
-	public void chercheAdmissible() {
-		ArrayList<Noeud> list = convertKeyToList();
-		StringBuilder sb = new StringBuilder();
-		
-		
-		for(int i =0; i< list.size() ;i++) {
-			
+	public void getAllPrefere() {
+		getAllAdmissible();
+
+		//si list admissble possede que la solution null
+		if(listAdmissible.size() == 1) {
+			listPrefere.add(listAdmissible.get(0));
+		}else {
+			listAdmissible.remove(0);
+			for(ArrayList<String> unAdmissible : listAdmissible) {
+				if(!inclu(unAdmissible)) {
+					//System.out.println("\n"+unAdmissible);
+					listPrefere.add(unAdmissible); 
+				}
+			}
 		}
-		
-		
-		/** pour ABC il y a 7 solutions(combinaisons) possible
-		 * [A,B,C]
-		 *[A,B] || [A,C] || [B,C]
-		 * [A] || [B] || [C]
-		 * 
-		 * ABC
-		 * AB || 
-		 */
-
-
-		
+	}
+	
+	public ArrayList<ArrayList<String>> getListPrefere() {
+		return listPrefere;
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void afficheListPrefere() {
+		
+		getAllPrefere();
+		String str= null;
+		if(listPrefere.size() >0) {
+			if(compteur < listPrefere.size()) {
+				str = String.join(",", listPrefere.get(compteur++));
+				System.out.println(str);
+			}else {
+				compteur = 0;
+				str = String.join(",", listPrefere.get(compteur++));
+				System.out.println(listPrefere.get(compteur++));
+			}
+		}	
+	}
+
 }
