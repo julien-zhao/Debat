@@ -1,3 +1,8 @@
+/**
+ * la class Noeud correspond a un argument
+ * @author julien et Victor
+ *
+ */
 public class Noeud {
     /**
     * Le nom du noeud
@@ -11,10 +16,19 @@ public class Noeud {
     public Noeud(String arg){
         this.arg = arg;
     }
+    /**
+     * retourne un noeud
+     * @return un string
+     */
     public String getNoeud() {
         return arg;
     }
+    /**
+     * modifier un noeud
+     * @param arg
+     */
     public void setNoeud(String arg) {
         this.arg = arg;
     }
+
 }

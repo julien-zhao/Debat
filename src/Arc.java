@@ -1,5 +1,10 @@
 import java.util.ArrayList;
-
+/**
+ * la classe Arc correspond à la partie argument d'un noeud
+ * 
+ * @author Julien et Victor
+ *
+ */
 public class Arc {
 	/**
 	 * La liste des noeuds de l'arc
@@ -7,7 +12,7 @@ public class Arc {
 	private ArrayList<Noeud> listNoeud;
 
 	/**
-	 * Creer une liste vide de noeud
+	 * Crée une liste vide de noeud
 	 */
 	public Arc() {
 		listNoeud = new ArrayList<Noeud>();
@@ -24,13 +29,12 @@ public class Arc {
 
 	/**
 	 * affiche tous les noeuds de la liste listNoeud
+	 * @param un String
 	 */
 	public String afficheArc() {
-
 		StringBuilder sb = new StringBuilder("[");
 		int i = 0;
 		for (i = 0; i < listNoeud.size(); i++) {
-
 			sb.append(listNoeud.get(i).getNoeud());
 			if (i < listNoeud.size() - 1) {
 				sb.append(",");
@@ -39,7 +43,10 @@ public class Arc {
 		sb.append("]");
 		return sb.toString();
 	}
-
+	/**
+	 * affiche une liste de contradiction du noeud 
+	 * @return une liste
+	 */
 	public ArrayList<Noeud> getArc() {
 		return listNoeud;
 	}
@@ -48,9 +55,10 @@ public class Arc {
 	 * Enleve un noeud de listNoeud
 	 */
 	public void removeNoeudDeArc(Noeud unNoeud) {
-		for (int i = 0; i < listNoeud.size(); i++)
+		for (int i = 0; i < listNoeud.size(); i++) {
 			if (listNoeud.get(i).equals(unNoeud)) {
 				listNoeud.remove(i);
 			}
+		}
 	}
 }
