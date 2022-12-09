@@ -421,7 +421,19 @@ public class ListeAdjacence {
 		}
 		return tab;
 	}
-
+	/*
+	* Méthode qui remplit la liste map des solutions possibles sans répétition
+	*
+	* @param allSolution : prend une liste de liste de String qui va le remplir
+	* @param sousMap : liste de String qu'on va stocker dans map
+	* @param Input_Array : tableau initial avec les solutions à l'intérieur
+	* @param tabVide: le nouveau sous tableau construit à partir du tableau initial
+	* @param debut : indice de début de parcours
+	* @param fin : indice de fin de parcours
+	* @param indice: la taille du tableau initial Input_Array
+	* @param taideDeLaList: taille de la liste
+	*
+	*/
 	public void BuildCombinationPossible(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
 			String[] Input_Array, String[] tabVide, int debut, int fin, int indice, int tailleDeLaList) {
 
