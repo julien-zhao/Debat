@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
 /**
- * La class listeAdajacence correspond aux associations entre les noeuds et leurs voisins
+ * La class listeAdajacence correspond aux associations entre les noeuds et
+ * leurs voisins
+ * 
  * @author julien et Victor
  *
  */
@@ -18,12 +21,12 @@ public class ListeAdjacence {
 	 * une liste dont le noeud contredit
 	 */
 	private ArrayList<Noeud> listAttack;
-	
+
 	/**
 	 * une liste qui contredit le noeud
 	 */
 	private ArrayList<Noeud> listSeFaireAttack;
-	
+
 	/**
 	 * une liste de liste qui contient les noeuds admissible
 	 */
@@ -32,14 +35,15 @@ public class ListeAdjacence {
 	 * une liste de liste qui contient les noeuds preferes
 	 */
 	private ArrayList<ArrayList<String>> listPrefere;
-	
+
 	/**
-	 * un compteur qui sert a changer la solution admissible ou preferee 
+	 * un compteur qui sert a changer la solution admissible ou preferee
 	 */
-	public static int compteur =0;
-	
+	public static int compteur = 0;
+
 	/**
-	 * initialisation de maps, solutions, listAttack, listSeFaireAttack, listAdmissible, listPrefere
+	 * initialisation de maps, solutions, listAttack, listSeFaireAttack,
+	 * listAdmissible, listPrefere
 	 */
 	public ListeAdjacence() {
 		maps = new LinkedHashMap<Noeud, Arc>();
@@ -57,7 +61,6 @@ public class ListeAdjacence {
 	 * @return vrai si c'est identique, faux sinon
 	 */
 	public boolean stringCompareNoeud(String nom) {
-
 		for (Noeud unNoeud : maps.keySet()) {
 			if (unNoeud.getNoeud().equals(nom)) {
 				return true;
@@ -115,8 +118,7 @@ public class ListeAdjacence {
 			maps.get(arg1).add(arg2);
 		}
 	}
-	
-	
+
 	/**
 	 * méthode qui supprime un Noeud dans maps
 	 * 
@@ -131,7 +133,7 @@ public class ListeAdjacence {
 				tmp = unNoeud;
 			}
 		}
-		maps.remove(tmp); 
+		maps.remove(tmp);
 
 		for (Noeud unNoeud1 : maps.keySet()) {
 			maps.get(unNoeud1).removeNoeudDeArc(tmp);
@@ -145,6 +147,7 @@ public class ListeAdjacence {
 
 	/**
 	 * renvoie la maps
+	 * 
 	 * @return une HashMap
 	 */
 	public LinkedHashMap<Noeud, Arc> getMaps() {
@@ -165,6 +168,7 @@ public class ListeAdjacence {
 		}
 		return sb.toString();
 	}
+
 	/**
 	 * affiche le graphe dans la console
 	 */
@@ -188,12 +192,10 @@ public class ListeAdjacence {
 		if (solutions.contains(tmp)) {
 			System.out.println("L'argument existe déjà");
 
-		}
-		else if (tmp == null) {
+		} else if (tmp == null) {
 			System.out.println("L'argument " + noeud + " n'existe pas dans le graphe");
 
-		}
-		else {
+		} else {
 			System.out.println("L'élément " + noeud + " a été ajouté.");
 			solutions.add(tmp);
 		}
@@ -218,93 +220,99 @@ public class ListeAdjacence {
 	/**
 	 * vérifie si tous les noeuds de solutions a au moins un argument contradictoire
 	 * de solutions ou non, s'il n'existe pas de contradiction.s entre les
-	 * différents noeuds de solutions affiche les solutions admissibles
+	 * différents noeuds de solutions affiches les solutions admissibles
 	 */
 	public void verifSolution() {
-		if(testSolution()) {
+		if (testSolution()) {
 			System.out.println("Solution admissible : " + afficheSolutions());
 		}
 	}
 
 	/**
-	 * en fonction de la solution, la methode remplit la listeAttack et listeSeFaireAttack
+	 * en fonction de la solution, la methode remplit la listeAttack et
+	 * listeSeFaireAttack
 	 */
-	public void remplieListAttackEtSeFaireAttack() {
-		for(int i=0; i< solutions.size();i++) {
+	private void remplieListAttackEtSeFaireAttack() {
+		for (int i = 0; i < solutions.size(); i++) {
 			ArrayList<Noeud> listContredit = getListContredit(solutions.get(i));
 			ArrayList<Noeud> listContradiction = getListContradiction(solutions.get(i));
-			
-			for(int j =0; j< listContradiction.size(); j++) {
-			
-				if(!listAttack.contains(listContradiction.get(j))) {
+
+			for (int j = 0; j < listContradiction.size(); j++) {
+
+				if (!listAttack.contains(listContradiction.get(j))) {
 					listAttack.add(listContradiction.get(j));
 				}
 			}
-			for(int j =0; j< listContredit.size(); j++) {
-				if(!listSeFaireAttack.contains(listContredit.get(j))) {
+			for (int j = 0; j < listContredit.size(); j++) {
+				if (!listSeFaireAttack.contains(listContredit.get(j))) {
 					listSeFaireAttack.add(listContredit.get(j));
 				}
 			}
 		}
 	}
+
 	/**
 	 * retourne le listAttack
+	 * 
 	 * @return une liste
 	 */
-	public ArrayList<Noeud> getListAttack(){
+	public ArrayList<Noeud> getListAttack() {
 		return listAttack;
 	}
-	
-	/**
-	 * Teste la solution 
-	 * @return si solutions admissible retourne true sinon false
-	 */
-	public boolean testSolution() {
-		if(solutions.size() ==0) {
-			return true;
-		}
 
-		remplieListAttackEtSeFaireAttack();
-		
-		for(int i =0; i< listAttack.size();i++) {
-			if(solutions.contains(listAttack.get(i) ) ) {	
-				return false;
-			}	
-		}
-		if(listAttack.containsAll(listSeFaireAttack)) {
+	/**
+	 * Teste la solution
+	 * 
+	 * @return si la solutions est admissible, elle retourne true sinon false
+	 */
+	private boolean testSolution() {
+		if (solutions.size() == 0) {
 			return true;
-		}else {
+		}
+		remplieListAttackEtSeFaireAttack();
+
+		for (int i = 0; i < listAttack.size(); i++) {
+			if (solutions.contains(listAttack.get(i))) {
+				return false;
+			}
+		}
+		if (listAttack.containsAll(listSeFaireAttack)) {
+			return true;
+		} else {
 			return false;
 		}
 	}
 
 	/**
-	 * Teste la solution pour la phase 1 en affichant la raison si la solution n'est pas admissible
+	 * Teste la solution pour la phase 1 en affichant la raison si la solution n'est
+	 * pas admissible
+	 * 
 	 * @return vrai si solution admissible sinon false
 	 */
 	public boolean testSolutionForPhase1() {
-		if(solutions.size() ==0) {
+		if (solutions.size() == 0) {
 			return true;
 		}
 		remplieListAttackEtSeFaireAttack();
-		for(int i =0; i< listAttack.size();i++) {
-			if(solutions.contains(listAttack.get(i))) {		
-				for(Noeud unNoeud : maps.keySet()) {
-					if(getListContradiction(unNoeud).contains(listAttack.get(i))) {
-						System.out.println(listAttack.get(i).getNoeud() + " se fait contredire par "+ unNoeud.getNoeud());
+		for (int i = 0; i < listAttack.size(); i++) {
+			if (solutions.contains(listAttack.get(i))) {
+				for (Noeud unNoeud : maps.keySet()) {
+					if (getListContradiction(unNoeud).contains(listAttack.get(i))) {
+						System.out.println(
+								listAttack.get(i).getNoeud() + " se fait contredire par " + unNoeud.getNoeud());
 					}
 				}
 				return false;
 			}
 		}
-
-		if(listAttack.containsAll(listSeFaireAttack)) {
+		if (listAttack.containsAll(listSeFaireAttack)) {
 			return true;
-		}else {
+		} else {
 			System.out.println(afficheSolutions() + " ne se defend pas");
 			return false;
 		}
 	}
+
 	/**
 	 * vérifie si le noeud noeud existe comme clé dans maps
 	 * 
@@ -333,6 +341,7 @@ public class ListeAdjacence {
 
 	/**
 	 * retourne une liste de contradiction d'un noeud
+	 * 
 	 * @param noeud
 	 * @return une liste
 	 */
@@ -358,16 +367,15 @@ public class ListeAdjacence {
 	}
 
 	/**
-	 * retourne la solution 
+	 * retourne la solution
+	 * 
 	 * @return une liste de noeud
 	 */
 	public ArrayList<Noeud> getSolutions() {
 		return solutions;
 	}
 
-
 	// Phase 2: les methodes suivantes sont utilisés dans la phase 2
-
 
 	/**
 	 * méthode qui prend une chaine et génère un graphe
@@ -380,9 +388,9 @@ public class ListeAdjacence {
 		String[] tab = chaine.split("[\\(\\)]");
 
 		sb.append(tab[1]);
-		argument(new Noeud(sb.toString()));	
+		argument(new Noeud(sb.toString()));
 	}
-	
+
 	/**
 	 * méthode qui va séparer la chaine en trouvant 2 arguments qui sont séparés par
 	 * une virgule et créé la contradiction
@@ -393,16 +401,17 @@ public class ListeAdjacence {
 	public boolean scanContradiction(String chaine) {
 		String[] tmp = chaine.split("[\\(\\)]");
 		String[] tab = tmp[1].split(",");
-		if(stringCompareNoeud(tab[0]) && stringCompareNoeud(tab[1])){
+		if (stringCompareNoeud(tab[0]) && stringCompareNoeud(tab[1])) {
 			contradiction(stringToNoeud(tab[0]), stringToNoeud(tab[1]));
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
 
 	/**
 	 * retourne la taille du graphe
+	 * 
 	 * @return int
 	 */
 	public int getSizeMatrice() {
@@ -411,6 +420,7 @@ public class ListeAdjacence {
 
 	/**
 	 * retourne tous les arguments du graphe
+	 * 
 	 * @return tableau de string
 	 */
 	public String[] getAllArgument() {
@@ -421,19 +431,27 @@ public class ListeAdjacence {
 		}
 		return tab;
 	}
+
 	/*
-	* Méthode qui remplit la liste map des solutions possibles sans répétition
-	*
-	* @param allSolution : prend une liste de liste de String qui va le remplir
-	* @param sousMap : liste de String qu'on va stocker dans map
-	* @param Input_Array : tableau initial avec les solutions à l'intérieur
-	* @param tabVide: le nouveau sous tableau construit à partir du tableau initial
-	* @param debut : indice de début de parcours
-	* @param fin : indice de fin de parcours
-	* @param indice: la taille du tableau initial Input_Array
-	* @param taideDeLaList: taille de la liste
-	*
-	*/
+	 * Méthode qui remplit la liste map des solutions possibles sans répétition
+	 *
+	 * @param allSolution : prend une liste de liste de String qui va le remplir
+	 * 
+	 * @param sousMap : liste de String qu'on va stocker dans map
+	 * 
+	 * @param Input_Array : tableau initial avec les solutions à l'intérieur
+	 * 
+	 * @param tabVide: le nouveau sous tableau construit à partir du tableau initial
+	 * 
+	 * @param debut : indice de début de parcours
+	 * 
+	 * @param fin : indice de fin de parcours
+	 * 
+	 * @param indice: la taille du tableau initial Input_Array
+	 * 
+	 * @param taideDeLaList: taille de la liste
+	 *
+	 */
 	public void BuildCombinationPossible(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
 			String[] Input_Array, String[] tabVide, int debut, int fin, int indice, int tailleDeLaList) {
 
@@ -449,26 +467,32 @@ public class ListeAdjacence {
 
 		for (int y = debut; y <= fin && fin - y + 1 >= tailleDeLaList - indice; y++) {
 			tabVide[indice] = Input_Array[y];
-			BuildCombinationPossible(allSolution, sousMap, Input_Array, tabVide, y + 1, fin, indice + 1, tailleDeLaList);
+			BuildCombinationPossible(allSolution, sousMap, Input_Array, tabVide, y + 1, fin, indice + 1,
+					tailleDeLaList);
 		}
 	}
+
 	/**
 	 * méthode qui construit toute les combinaisons possible
+	 * 
 	 * @param allSolution la liste des solutions admissibles
-	 * @param sousMap 
-	 * @param Input_Array
-	 * @param n
-	 * @param r
+	 * @param sousMap
+	 * @param Input_Array tableau initial avec les solutions à l'intérieur
+	 * @param n taille du nouveau tableau
+	 * @param r taille de la liste
 	 */
-	public void Print_Combination(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap, String[] Input_Array, int n,
-			int r) {
+	public void Print_Combination(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
+			String[] Input_Array, int n, int r) {
 		String[] Empty_Array = new String[r];
 		BuildCombinationPossible(allSolution, sousMap, Input_Array, Empty_Array, 0, n - 1, 0, r);
 	}
+
 	/**
-	 * méthode qui renvoie une liste de liste qui contient toute les combinaisons possible en ajoutant la solution vide
+	 * méthode qui renvoie une liste de liste qui contient toute les combinaisons
+	 * possible en ajoutant la solution vide
+	 * 
 	 * @return une liste de liste
-	 */ 
+	 */
 	public ArrayList<ArrayList<String>> createAllCombinaison() {
 		String[] tab = getAllArgument();
 		ArrayList<ArrayList<String>> allSolution = new ArrayList<ArrayList<String>>();
@@ -486,13 +510,14 @@ public class ListeAdjacence {
 
 	/**
 	 * ajoute un noeud dans la liste solution
+	 * 
 	 * @param noeud
 	 */
 	public void addSolutionAdmissible(String noeud) {
-		Noeud tmp = stringToNoeud(noeud);	
+		Noeud tmp = stringToNoeud(noeud);
 		solutions.add(tmp);
 	}
-	
+
 	/**
 	 * creation de liste admissible
 	 */
@@ -507,35 +532,38 @@ public class ListeAdjacence {
 				addSolutionAdmissible(listAllCombinaison.get(i).get(j));
 			}
 			if (testSolution()) {
-				listAdmissible.add(listAllCombinaison.get(i));			
+				listAdmissible.add(listAllCombinaison.get(i));
 			}
 		}
 	}
 
 	/**
 	 * retourne une liste admissible
+	 * 
 	 * @return une liste
 	 */
 	public ArrayList<ArrayList<String>> getListAdmissible() {
 		return listAdmissible;
 	}
-	
+
 	/**
-	 * affiche une solution admissible, si pas de contradiction, on retourne la solution vide
+	 * affiche une solution admissible, si pas de contradiction, on retourne la
+	 * solution vide
+	 * 
 	 * @return un string
 	 */
 	public String afficheUneAdmissible() {
-		if(listAdmissible.size() ==0) {
+		if (listAdmissible.size() == 0) {
 			createListAdmissible();
 		}
 		String str;
-		if(listAdmissible.size() >0) {
-			
-			if(compteur < listAdmissible.size() ) {
+		if (listAdmissible.size() > 0) {
+
+			if (compteur < listAdmissible.size()) {
 				str = String.join(",", listAdmissible.get(compteur++));
 				return str;
 
-			}else {	
+			} else {
 				compteur = 0;
 				str = String.join(",", listAdmissible.get(compteur++));
 				return str;
@@ -543,64 +571,65 @@ public class ListeAdjacence {
 		}
 		return "";
 	}
-	
+
 	/**
 	 * verifie si une liste admissible est inclue dans une autre liste admissible
+	 * 
 	 * @param unAdmissible
 	 * @return true si il est inclu, false sinon
 	 */
-	public boolean inclu(ArrayList<String> unAdmissible) {
-		for(int i =0; i< listAdmissible.size(); i++) {
-			if(listAdmissible.get(i).containsAll(unAdmissible) && listAdmissible.get(i) != unAdmissible) {
+	private boolean inclu(ArrayList<String> unAdmissible) {
+		for (int i = 0; i < listAdmissible.size(); i++) {
+			if (listAdmissible.get(i).containsAll(unAdmissible) && listAdmissible.get(i) != unAdmissible) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
-	 * creation d'une liste preferée
+	 * creation d'une liste preferée, si dans la solution admissible il y a que la solution vide,
+	 * la solution préférée contiendra uniquement la solution vide.
 	 */
 	public void createListPrefere() {
-	
-		if(listAdmissible.size() ==0) {
+		if (listAdmissible.size() == 0) {
 			createListAdmissible();
 		}
-		//si list admissble possede que la solution null
-		if(listAdmissible.size() == 1) {
+		if (listAdmissible.size() == 1) {
 			listPrefere.add(listAdmissible.get(0));
-		}else {
-			//listAdmissible.remove(0);
-			for(ArrayList<String> unAdmissible : listAdmissible) {
-				if(!inclu(unAdmissible)) {
-					listPrefere.add(unAdmissible); 
+		} else {
+			for (ArrayList<String> unAdmissible : listAdmissible) {
+				if (!inclu(unAdmissible)) {
+					listPrefere.add(unAdmissible);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * retourne la liste prefeée
+	 * 
 	 * @return une liste
 	 */
 	public ArrayList<ArrayList<String>> getListPrefere() {
 		return listPrefere;
 	}
-	
+
 	/**
 	 * affiche une des solutions préférées
+	 * 
 	 * @return un string
 	 */
 	public String afficheUnePrefere() {
-		if(listPrefere.size() ==0) {
+		if (listPrefere.size() == 0) {
 			createListPrefere();
 		}
-		String str= null;
-		if(listPrefere.size() >0) {
-			if(compteur < listPrefere.size()) {
+		String str = null;
+		if (listPrefere.size() > 0) {
+			if (compteur < listPrefere.size()) {
 				str = String.join(",", listPrefere.get(compteur++));
 				return str;
-			}else {
+			} else {
 				compteur = 0;
 				str = String.join(",", listPrefere.get(compteur++));
 				return str;
@@ -608,15 +637,16 @@ public class ListeAdjacence {
 		}
 		return "";
 	}
+
 	/**
 	 * affiche toutes les solutions preferees
 	 */
 	public void affichePrefere() {
-		if(listPrefere.size() ==0) {
+		if (listPrefere.size() == 0) {
 			createListPrefere();
 		}
-		System.out.println("\nSolutions preferées : " );
-		for(int i =0; i< listPrefere.size();i++) {
+		System.out.println("\nSolutions preferées : ");
+		for (int i = 0; i < listPrefere.size(); i++) {
 			System.out.println(listPrefere.get(i));
 		}
 	}
@@ -625,11 +655,11 @@ public class ListeAdjacence {
 	 * affiche toutes les solutions admissibles
 	 */
 	public void afficheAdmissible() {
-		if(listAdmissible.size() ==0) {
+		if (listAdmissible.size() == 0) {
 			createListAdmissible();
 		}
-		System.out.println("\nSolutions admissiblées : " );
-		for(int i =0; i< listAdmissible.size();i++) {
+		System.out.println("\nSolutions admissiblées : ");
+		for (int i = 0; i < listAdmissible.size(); i++) {
 			System.out.println(listAdmissible.get(i));
 		}
 	}
