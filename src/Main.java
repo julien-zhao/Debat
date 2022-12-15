@@ -7,12 +7,13 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String [] args){
+
 		Scanner sc = new Scanner(System.in);
 		ListeAdjacence matrice = new ListeAdjacence();
 		
 		if(args.length ==0) {
 			int nbArg = Utile.nbArg(sc);		
-			Utile.menu1(sc,nbArg, matrice);
+			Menus.menu1(sc,nbArg, matrice);
 		}else {
 			try {
 				Utile.lireFichier(args[0],matrice);
@@ -22,7 +23,7 @@ public class Main {
 			matrice.afficheGraphe();
 			matrice.afficheAdmissible();
 			matrice.affichePrefere();		
-			Utile.menu3(sc,matrice);
+			Menus.menu3(sc,matrice);
 		}
 		sc.close();	
 	}

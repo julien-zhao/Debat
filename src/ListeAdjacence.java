@@ -54,8 +54,19 @@ public class ListeAdjacence {
 		listPrefere = new ArrayList<ArrayList<String>>();
 	}
 
+	public ListeAdjacence(LinkedHashMap<Noeud,Arc> maps,
+			ArrayList<Noeud>listAttack,ArrayList<Noeud>listSeFaireAttack, 
+			ArrayList<ArrayList<String>>listAdmissible, ArrayList<ArrayList<String>>listPrefere) {
+		this.maps = maps;
+		this.solutions = new ArrayList<Noeud>();
+		this.listAttack =listAttack;
+		this.listSeFaireAttack = listSeFaireAttack;
+		this.listAdmissible = listAdmissible;
+		this.listPrefere = listPrefere;
+		
+	}
 	/**
-	 * méthode qui compare un String au nom du Noeud
+	 * méthode qui compare un String au nom du Noeud qui sont dans la maps
 	 * 
 	 * @param nom
 	 * @return vrai si c'est identique, faux sinon
@@ -92,7 +103,7 @@ public class ListeAdjacence {
 	 * @return vrai si on a bien ajouté le noeud dans maps faux si le noeud existe
 	 *         déjà dans maps
 	 */
-	public boolean argument(Noeud noeud) {
+	public boolean addArgument(Noeud noeud) {
 		boolean identique = true;
 		for (Noeud unNoeud : maps.keySet()) {
 			if (noeud.getNoeud().equals(unNoeud.getNoeud())) {
@@ -113,7 +124,7 @@ public class ListeAdjacence {
 	 * @param arg2
 	 * 
 	 */
-	public void contradiction(Noeud arg1, Noeud arg2) {
+	public void addContradiction(Noeud arg1, Noeud arg2) {
 		if (!maps.get(arg1).getArc().contains(arg2) && (!arg1.equals(arg2))) {
 			maps.get(arg1).add(arg2);
 		}
@@ -181,23 +192,24 @@ public class ListeAdjacence {
 	 ************************************/
 
 	/**
-	 * methode qui ajoute un String dans solutions en tenant compte s'il existe déjà
-	 * et s'il existe dans le graphe
+	 * methode qui ajoute un String dans solutions 
+	 * si la solution contient deja le noeud, il retourne 3
+	 * si la le noeud n'existe pas de la graphe, il retourne 2
+	 * si il a reussi a l'ajouté, il retourne 1
 	 * 
 	 * @param noeud
+	 * @return int
 	 */
-	public void addSolution(String noeud) {
+	public int addSolution(String noeud) {
 		Noeud tmp = stringToNoeud(noeud);
 
 		if (solutions.contains(tmp)) {
-			System.out.println("L'argument existe déjà");
-
+			return 3;
 		} else if (tmp == null) {
-			System.out.println("L'argument " + noeud + " n'existe pas dans le graphe");
-
+			return 2;
 		} else {
-			System.out.println("L'élément " + noeud + " a été ajouté.");
 			solutions.add(tmp);
+			return 1;
 		}
 	}
 
@@ -388,7 +400,7 @@ public class ListeAdjacence {
 		String[] tab = chaine.split("[\\(\\)]");
 
 		sb.append(tab[1]);
-		argument(new Noeud(sb.toString()));
+		addArgument(new Noeud(sb.toString()));
 	}
 
 	/**
@@ -402,7 +414,7 @@ public class ListeAdjacence {
 		String[] tmp = chaine.split("[\\(\\)]");
 		String[] tab = tmp[1].split(",");
 		if (stringCompareNoeud(tab[0]) && stringCompareNoeud(tab[1])) {
-			contradiction(stringToNoeud(tab[0]), stringToNoeud(tab[1]));
+			addContradiction(stringToNoeud(tab[0]), stringToNoeud(tab[1]));
 			return true;
 		} else {
 			return false;
