@@ -1,8 +1,9 @@
 
-import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,7 +38,8 @@ public class TestDebat {
 		maps.get(premierNoeud).add(troisiemeNoeud);
 		maps.get(deuxiemeNoeud).add(premierNoeud);
 		
-		graph = new ListeAdjacence(maps,listAttack,listSeFaireAttack,listAdmissible,listPrefere);
+		graph = new ListeAdjacence(maps);
+		System.out.println(graph.affichage());
 	}
 	
 	@Test
@@ -103,9 +105,18 @@ public class TestDebat {
 	
 	
 	
-	
-	
-	
+	@Test
+	void testSolution1() {
+		Noeud unNoeud = new Noeud("A");
+		graph.addArgument(unNoeud);
+		assertTrue(graph.testSiSolutionAdmissible());
+	}
+	@Test
+	void testSolution2() {
+		Noeud unNoeud = new Noeud("P");
+		graph.addArgument(unNoeud);
+		assertFalse(graph.testSiSolutionAdmissible());
+	}
 	
 	
 	

@@ -80,7 +80,12 @@ public class Utile {
 
 	// Phase 2
 	/**
-	 * methode qui permet de lire un fichier
+	 * methode qui permet de lire un fichier, la methode verifier 
+	 * si le fichier est vide
+	 * si la ligne est mal formaté 
+	 * si la ligne est vide 
+	 * dans une contradiction, les arguments doivent être défini
+	 * 
 	 * 
 	 * @param chemin
 	 * @param maps
@@ -89,7 +94,7 @@ public class Utile {
 	public static void lireFichier(String chemin, ListeAdjacence maps) throws FileNotFoundException {
 
 		File file = new File(chemin);
-
+		int compteurLine = 0;
 		if (!file.exists()) {
 			System.out.println("Le fichier n'existe pas");
 			System.exit(-1);
@@ -98,17 +103,21 @@ public class Utile {
 			while (scanner.hasNext()) {
 
 				String line = scanner.nextLine();
-
+				compteurLine++;
+				
 				if (line.startsWith("argument(") && line.endsWith(").")) {
 					maps.scanArgument(line);
-				} else if (line.startsWith("contradiction(") && line.endsWith(").")) {
+				} 
+				else if (line.startsWith("contradiction(") && line.endsWith(").")) {
 					if (!maps.scanContradiction(line)) {
-						System.out.println(line + " possède un argument non defini pour faire une contradiction");
+						System.out.println('"'+line+'"'+" [ligne: "+compteurLine+"]" + " possède un argument non defini pour faire une contradiction");
 						System.exit(-1);
 					}
-
-				} else {
-					System.out.println("La ligne " + line + " est mal formatée");
+				} 
+				else if(line.equals("")) {
+				}
+				else {
+					System.out.println('"'+line+'"'+" [ligne: "+compteurLine+"]" + " est mal formatée");
 					System.exit(-1);
 				}
 			}

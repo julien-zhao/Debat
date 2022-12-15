@@ -82,6 +82,7 @@ public class Menus {
 					System.out.println("L'élément " + chaine + " a été ajouté");
 				}else if (maps.addSolution(chaine) == 2) {
 					System.out.println("L'argument " + chaine + " n'existe pas dans le graphe");
+
 				}else {
 					System.out.println("L'argument existe déjà");
 				};
@@ -107,10 +108,9 @@ public class Menus {
 				}
 				if (maps.testSolutionForPhase1() == false) {
 					System.out.println("Solution non admissible");
-					maps.verifSolution();
 					System.out.println("Solution actuelle : " + maps.afficheSolutions());
 				} else {
-					maps.verifSolution();
+					System.out.println("Solution admissible");
 					System.out.println("Solution actuelle : " + maps.afficheSolutions());
 				}
 				break;

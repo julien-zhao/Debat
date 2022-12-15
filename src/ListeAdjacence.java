@@ -54,15 +54,13 @@ public class ListeAdjacence {
 		listPrefere = new ArrayList<ArrayList<String>>();
 	}
 
-	public ListeAdjacence(LinkedHashMap<Noeud,Arc> maps,
-			ArrayList<Noeud>listAttack,ArrayList<Noeud>listSeFaireAttack, 
-			ArrayList<ArrayList<String>>listAdmissible, ArrayList<ArrayList<String>>listPrefere) {
+	public ListeAdjacence(LinkedHashMap<Noeud,Arc> maps) {
 		this.maps = maps;
-		this.solutions = new ArrayList<Noeud>();
-		this.listAttack =listAttack;
-		this.listSeFaireAttack = listSeFaireAttack;
-		this.listAdmissible = listAdmissible;
-		this.listPrefere = listPrefere;
+		solutions = new ArrayList<Noeud>();
+		listAttack = new ArrayList<Noeud>();
+		listSeFaireAttack = new ArrayList<Noeud>();
+		listAdmissible = new ArrayList<ArrayList<String>>();
+		listPrefere = new ArrayList<ArrayList<String>>();
 		
 	}
 	/**
@@ -229,16 +227,6 @@ public class ListeAdjacence {
 		return solutions.remove(tmp);
 	}
 
-	/**
-	 * vérifie si tous les noeuds de solutions a au moins un argument contradictoire
-	 * de solutions ou non, s'il n'existe pas de contradiction.s entre les
-	 * différents noeuds de solutions affiches les solutions admissibles
-	 */
-	public void verifSolution() {
-		if (testSolution()) {
-			System.out.println("Solution admissible : " + afficheSolutions());
-		}
-	}
 
 	/**
 	 * en fonction de la solution, la methode remplit la listeAttack et
@@ -277,7 +265,7 @@ public class ListeAdjacence {
 	 * 
 	 * @return si la solutions est admissible, elle retourne true sinon false
 	 */
-	private boolean testSolution() {
+	protected boolean testSiSolutionAdmissible() {
 		if (solutions.size() == 0) {
 			return true;
 		}
@@ -543,7 +531,7 @@ public class ListeAdjacence {
 			for (int j = 0; j < listAllCombinaison.get(i).size(); j++) {
 				addSolutionAdmissible(listAllCombinaison.get(i).get(j));
 			}
-			if (testSolution()) {
+			if (testSiSolutionAdmissible()) {
 				listAdmissible.add(listAllCombinaison.get(i));
 			}
 		}
