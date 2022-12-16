@@ -1,1 +1,5 @@
-A1,A3
+argument(A).
+argument(B).
+      
+contradiction(A,B).
+contradiction(B,A).

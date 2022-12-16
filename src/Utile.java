@@ -128,7 +128,7 @@ public class Utile {
 	/**
 	 * methode qui permet de sauvegarder une solution 
 	 * si le fichier existe pas, il sera crée 
-	 * si le fichier existe deja, il sera écraser
+	 * si le fichier existe deja, il sera écrasé
 	 * si le chemin n'existe pas, le menu réapparait.
 	 * 
 	 * @param chemin
@@ -137,9 +137,7 @@ public class Utile {
 	public static void saveSolution(String chemin, String solution) {
 
 		File file = new File(chemin);
-
-		try {
-			
+		try {			
 			if (!file.exists() ) {
 				file.createNewFile();
 			}
@@ -155,6 +153,4 @@ public class Utile {
 			System.out.println("Erreur du chemin");
 		}
 	}
-
-
 }

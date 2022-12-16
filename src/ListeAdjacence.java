@@ -32,7 +32,7 @@ public class ListeAdjacence {
 	 */
 	private ArrayList<ArrayList<String>> listAdmissible;
 	/**
-	 * une liste de liste qui contient les noeuds preferes
+	 * une liste de liste qui contient les noeuds preferées
 	 */
 	private ArrayList<ArrayList<String>> listPrefere;
 
@@ -63,6 +63,7 @@ public class ListeAdjacence {
 		listPrefere = new ArrayList<ArrayList<String>>();
 		
 	}
+	
 	/**
 	 * méthode qui compare un String au nom du Noeud qui sont dans la maps
 	 * 
@@ -251,14 +252,6 @@ public class ListeAdjacence {
 		}
 	}
 
-	/**
-	 * retourne le listAttack
-	 * 
-	 * @return une liste
-	 */
-	public ArrayList<Noeud> getListAttack() {
-		return listAttack;
-	}
 
 	/**
 	 * Teste la solution
@@ -298,8 +291,7 @@ public class ListeAdjacence {
 			if (solutions.contains(listAttack.get(i))) {
 				for (Noeud unNoeud : maps.keySet()) {
 					if (getListContradiction(unNoeud).contains(listAttack.get(i))) {
-						System.out.println(
-								listAttack.get(i).getNoeud() + " se fait contredire par " + unNoeud.getNoeud());
+						System.out.println(listAttack.get(i).getNoeud() + " se fait contredire par " + unNoeud.getNoeud());
 					}
 				}
 				return false;
@@ -313,23 +305,12 @@ public class ListeAdjacence {
 		}
 	}
 
-	/**
-	 * vérifie si le noeud noeud existe comme clé dans maps
-	 * 
-	 * @param noeud
-	 * @return true ou false correspondant à l'appartenance du noeud noeud comme clé
-	 *         dans maps
-	 */
-	public boolean inSolution(Noeud noeud) {
-		return maps.keySet().contains(noeud);
-	}
-
 	/*
 	 * retourne une liste d'argument.s qui contredit noeud
 	 * 
 	 * @return la liste list de tous les arguments qui viennent contredire noeud
 	 */
-	public ArrayList<Noeud> getListContredit(Noeud noeud) {
+	private ArrayList<Noeud> getListContredit(Noeud noeud) {
 		ArrayList<Noeud> list = new ArrayList<>();
 		for (Noeud unNoeud : maps.keySet()) {
 			if (maps.get(unNoeud).getArc().contains(noeud)) {
@@ -345,7 +326,7 @@ public class ListeAdjacence {
 	 * @param noeud
 	 * @return une liste
 	 */
-	public ArrayList<Noeud> getListContradiction(Noeud noeud) {
+	private ArrayList<Noeud> getListContradiction(Noeud noeud) {
 		return maps.get(noeud).getArc();
 	}
 
@@ -432,7 +413,7 @@ public class ListeAdjacence {
 		return tab;
 	}
 
-	/*
+	/*Source : https://www.delftstack.com/fr/howto/java/java-combinations/
 	 * Méthode qui remplit la liste map des solutions possibles sans répétition
 	 *
 	 * @param allSolution : prend une liste de liste de String qui va le remplir
@@ -452,7 +433,7 @@ public class ListeAdjacence {
 	 * @param taideDeLaList: taille de la liste
 	 *
 	 */
-	public void BuildCombinationPossible(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
+	private void BuildCombinationPossible(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
 			String[] Input_Array, String[] tabVide, int debut, int fin, int indice, int tailleDeLaList) {
 
 		if (indice == tailleDeLaList) {
@@ -481,7 +462,7 @@ public class ListeAdjacence {
 	 * @param n taille du nouveau tableau
 	 * @param r taille de la liste
 	 */
-	public void Print_Combination(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
+	private void BuildOneCombinaison(ArrayList<ArrayList<String>> allSolution, ArrayList<String> sousMap,
 			String[] Input_Array, int n, int r) {
 		String[] Empty_Array = new String[r];
 		BuildCombinationPossible(allSolution, sousMap, Input_Array, Empty_Array, 0, n - 1, 0, r);
@@ -493,7 +474,7 @@ public class ListeAdjacence {
 	 * 
 	 * @return une liste de liste
 	 */
-	public ArrayList<ArrayList<String>> createAllCombinaison() {
+	protected ArrayList<ArrayList<String>> createAllCombinaison() {
 		String[] tab = getAllArgument();
 		ArrayList<ArrayList<String>> allSolution = new ArrayList<ArrayList<String>>();
 		ArrayList<String> uneSolution = new ArrayList<String>();
@@ -503,17 +484,18 @@ public class ListeAdjacence {
 
 		int n = tab.length;
 		for (int i = 1; i <= tab.length; i++) {
-			Print_Combination(allSolution, uneSolution, tab, n, i);
+			BuildOneCombinaison(allSolution, uneSolution, tab, n, i);
 		}
+
 		return allSolution;
 	}
 
 	/**
-	 * ajoute un noeud dans la liste solution
+	 * méthode qui prend un string, le convertie en Noeud et le rajoute dans solution
 	 * 
-	 * @param noeud
+	 * @param noeud un string
 	 */
-	public void addSolutionAdmissible(String noeud) {
+	private void addSolutionAdmissible(String noeud) {
 		Noeud tmp = stringToNoeud(noeud);
 		solutions.add(tmp);
 	}
@@ -521,7 +503,7 @@ public class ListeAdjacence {
 	/**
 	 * creation de liste admissible
 	 */
-	public void createListAdmissible() {
+	protected void createListAdmissible() {
 		ArrayList<ArrayList<String>> listAllCombinaison = createAllCombinaison();
 
 		for (int i = 0; i < listAllCombinaison.size(); i++) {
@@ -572,13 +554,13 @@ public class ListeAdjacence {
 		return "";
 	}
 
-	/**
+	/*
 	 * verifie si une liste admissible est inclue dans une autre liste admissible
 	 * 
 	 * @param unAdmissible
 	 * @return true si il est inclu, false sinon
 	 */
-	private boolean inclu(ArrayList<String> unAdmissible) {
+	protected boolean inclu(ArrayList<String> unAdmissible) {
 		for (int i = 0; i < listAdmissible.size(); i++) {
 			if (listAdmissible.get(i).containsAll(unAdmissible) && listAdmissible.get(i) != unAdmissible) {
 				return true;
@@ -639,7 +621,7 @@ public class ListeAdjacence {
 	}
 
 	/**
-	 * affiche toutes les solutions preferees
+	 * affiche toutes les solutions preferées
 	 */
 	public void affichePrefere() {
 		if (listPrefere.size() == 0) {
@@ -658,7 +640,7 @@ public class ListeAdjacence {
 		if (listAdmissible.size() == 0) {
 			createListAdmissible();
 		}
-		System.out.println("\nSolutions admissiblées : ");
+		System.out.println("\nSolutions admissibles : ");
 		for (int i = 0; i < listAdmissible.size(); i++) {
 			System.out.println(listAdmissible.get(i));
 		}
