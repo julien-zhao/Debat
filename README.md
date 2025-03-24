@@ -24,7 +24,6 @@ Debat is a Java-based project developed as part of a third-year Object-Oriented 
    ```bash
    cd Debat
    ```
-
 3. Run the application:
    ```bash
    java -jar Debat.jar
