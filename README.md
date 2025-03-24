@@ -20,7 +20,7 @@ Debat is a Java-based project developed as part of a third-year Object-Oriented 
    ```bash
    git clone https://github.com/julien-zhao/Debat.git
    ```
-2 Navigate to the project folder and compile:
+2. Navigate to the project folder and compile:
    ```bash
    cd Debat
    ```
